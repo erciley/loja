@@ -1064,19 +1064,16 @@ const pixPriceStr =
       <div class="prod-body">
         <div class="prod-name">${p.name}</div>
         <div class="prod-type">${p.type}</div>
-        ${stockHTML}
-        <div class="prod-footer">
 
-  <<div class="prod-footer">
+ ${stockHTML}
+
+<div class="prod-footer">
   <span class="prod-price">R$ ${priceStr}</span>
-  <button
-    class="add-btn ${inCart?'added':''}"
-    ${outOfStock||atMaxStock?'disabled':''}
-    onclick="addToCart(${p.id})"
-  >
-    ${btnLabel}
-  </button>
+  <button class="add-btn ${inCart?'added':''}" ${outOfStock||atMaxStock?'disabled':''} onclick="addToCart(${p.id})">${btnLabel}</button>
 </div>
+
+</div>
+</div>`;
   }).join('');
 }
 
