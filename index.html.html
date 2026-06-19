@@ -123,6 +123,33 @@ footer{background:#060408;border-top:1px solid rgba(212,175,55,.12);padding:2.5r
 .footer-copy{font-size:.65rem;color:rgba(255,255,255,.22);letter-spacing:.5px}
 html{scroll-behavior:smooth}
 @media(max-width:600px){.form-row{grid-template-columns:1fr}.nav-links{display:none}}
+  .price-box{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+
+.discount-badge{
+  display:inline-block;
+  background:#dc2626;
+  color:#fff;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:.65rem;
+  font-weight:700;
+}
+
+.old-price{
+  font-size:.75rem;
+  color:#94a3b8;
+  text-decoration:line-through;
+}
+
+.prod-price{
+  color:#f59e0b;
+  font-size:1.15rem;
+  font-weight:800;
+}
 
 /* ── ADMIN PANEL ── */
 .admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;display:none;align-items:center;justify-content:center;padding:1rem}
@@ -853,10 +880,19 @@ let editingId = null;
 function normalizeProduct(p){
   const rarity = (p.badge || p.rarity || 'Disponivel').trim();
   return {
-    id: p.id,
-    name: p.name || '',
-    type: p.type || p.category || '',
-    price: Number(p.price) || 0,
+    return {
+  id: p.id,
+  name: p.name,
+  type: p.type || p.category || '',
+  price: Number(p.price) || 0,
+
+  pixDiscount:
+    Number(
+      p.pixDiscount ??
+      p.pix_discount ??
+      0
+    ),
+
     badge: rarity,
     badgeClass: p.badgeClass || p.badge_class || RARITY_MAP[rarity.toLowerCase()] || 'b-default',
     emoji: p.emoji || 'CARD',
@@ -887,6 +923,7 @@ function productToSupabase(product){
     product_type: product.cat,
     stock: product.stock,
     status: product.status,
+    pix_discount: product.pixDiscount || 0,
   };
 }
 
@@ -997,7 +1034,28 @@ function renderProducts(filter){
     if(outOfStock) btnLabel = 'Esgotado';
     else if(isPresale) btnLabel = inCart ? '✓ Reservado' : '+ Reservar';
     else if(inCart) btnLabel = '✓ Adicionado';
-    const priceStr = p.price.toLocaleString('pt-BR', {minimumFractionDigits:2,maximumFractionDigits:2});
+    const discount = Number(p.pixDiscount || 0);
+
+const pixPrice =
+  p.price * (1 - discount / 100);
+
+const priceStr =
+  p.price.toLocaleString(
+    'pt-BR',
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  );
+
+const pixPriceStr =
+  pixPrice.toLocaleString(
+    'pt-BR',
+    {
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    }
+  );
     return `<div class="product-card ${outOfStock?'sold-out':''}" id="pc-${p.id}">
       <div class="prod-img">
         <span class="prod-badge ${p.badgeClass}">${p.badge}</span>
@@ -1009,9 +1067,44 @@ function renderProducts(filter){
         <div class="prod-type">${p.type}</div>
         ${stockHTML}
         <div class="prod-footer">
-          <span class="prod-price">R$ ${priceStr}</span>
-          <button class="add-btn ${inCart?'added':''}" ${outOfStock||atMaxStock?'disabled':''} onclick="addToCart(${p.id})">${btnLabel}</button>
+
+  ${
+    discount > 0
+    ?
+    `
+      <div class="price-box">
+
+        <div class="discount-badge">
+          🔥 ${discount}% OFF
         </div>
+
+        <div class="old-price">
+          R$ ${priceStr}
+        </div>
+
+        <div class="prod-price">
+          R$ ${pixPriceStr}
+        </div>
+
+      </div>
+    `
+    :
+    `
+      <span class="prod-price">
+        R$ ${priceStr}
+      </span>
+    `
+  }
+
+  <button
+    class="add-btn ${inCart?'added':''}"
+    ${outOfStock||atMaxStock?'disabled':''}
+    onclick="addToCart(${p.id})"
+  >
+    ${btnLabel}
+  </button>
+
+</div>
       </div>
     </div>`;
   }).join('');
@@ -1304,20 +1397,26 @@ async function saveProduct(){
 
   const rarityRaw = document.getElementById('pf-rarity').value.trim();
   const stockRaw = document.getElementById('pf-stock').value.trim();
+  const pixDiscount = parseFloat(
+ document.getElementById('pf-pix-discount').value
+) || 0;
 
   let product = {
-    id: editingId || undefined,
-    name: name,
-    type: document.getElementById('pf-type').value.trim(),
-    price: price,
-    badge: rarityRaw || 'Disponivel',
-    badgeClass: RARITY_MAP[rarityRaw.toLowerCase()] || 'b-default',
-    emoji: document.getElementById('pf-emoji').value.trim() || 'CARD',
-    photo: document.getElementById('pf-photo-url').value.trim(),
-    cat: document.getElementById('pf-cat').value,
-    stock: stockRaw === '' ? null : parseInt(stockRaw, 10),
-    status: document.getElementById('pf-status').value,
-  };
+  id: editingId || undefined,
+  name: name,
+  type: document.getElementById('pf-type').value.trim(),
+  price: price,
+
+  pixDiscount: pixDiscount,
+
+  badge: rarityRaw || 'Disponivel',
+  badgeClass: RARITY_MAP[rarityRaw.toLowerCase()] || 'b-default',
+  emoji: document.getElementById('pf-emoji').value.trim() || 'CARD',
+  photo: document.getElementById('pf-photo-url').value.trim(),
+  cat: document.getElementById('pf-cat').value,
+  stock: stockRaw === '' ? null : parseInt(stockRaw, 10),
+  status: document.getElementById('pf-status').value,
+};
 
   if(supabaseClient){
     const payload = productToSupabase(product);
