@@ -740,9 +740,22 @@ const supabaseClient = window.supabase
           <input class="pf-input" id="pf-type" placeholder="Ex: Pokémon · Scarlet &amp; Violet">
         </div>
         <div>
-          <label class="pf-label">Preço (R$) *</label>
-          <input class="pf-input" id="pf-price" type="number" min="0" step="0.01" placeholder="0.00">
-        </div>
+  <label class="pf-label">Preço (R$) *</label>
+  <input class="pf-input" id="pf-price" type="number" min="0" step="0.01" placeholder="0.00">
+</div>
+
+<div>
+  <label class="pf-label">Desconto PIX (%)</label>
+  <input
+    class="pf-input"
+    id="pf-pix-discount"
+    type="number"
+    min="0"
+    max="100"
+    value="0"
+    placeholder="Ex: 5"
+  >
+</div>
         <div>
           <label class="pf-label">Raridade</label>
           <select class="pf-input" id="pf-rarity">
