@@ -1068,28 +1068,10 @@ const pixPriceStr =
         ${stockHTML}
         <div class="prod-footer">
 
-  ${
-    discount > 0
-    ?
-    `
-      <div class="price-box">
-
-        <div class="discount-badge">
-          🔥 ${discount}% OFF
-        </div>
-
-        <div class="old-price">
-          R$ ${priceStr}
-        </div>
-
-        <div class="prod-price">
-          R$ ${pixPriceStr}
-        </div>
-
-      </div>
-    `
-    :
-    `
+  <div class="prod-footer">
+  <span class="prod-price">R$ ${priceStr}</span>
+  <button class="add-btn ${inCart?'added':''}" ${outOfStock||atMaxStock?'disabled':''} onclick="addToCart(${p.id})">${btnLabel}</button>
+</div>
       <span class="prod-price">
         R$ ${priceStr}
       </span>
