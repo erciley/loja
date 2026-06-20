@@ -1428,7 +1428,23 @@ function getCartTotals(){
   return {subtotal, pixTotal, pixDiscount, interest, total, installmentValue: total / (paymentMethod === 'credit' ? creditInstallments : 1)};
 }
 
-setPaymentMethod
+function setPaymentMethod(method){
+  paymentMethod = method;
+
+  document.getElementById('payment-pix').classList.toggle('active', method === 'pix');
+  document.getElementById('payment-credit').classList.toggle('active', method === 'credit');
+
+  document.getElementById('installment-field').classList.toggle('open', method === 'credit');
+
+  const condition = document.getElementById('payment-condition');
+  condition.classList.toggle('credit', method === 'credit');
+
+  condition.textContent = method === 'pix'
+    ? 'O preço promocional e o desconto abaixo são exclusivos para pagamento via Pix.'
+    : 'No cartão aceitamos pagamento em até 3x sem juros.';
+
+  updateCartUI();
+}
 
 function setCreditInstallments(value){
   creditInstallments = Math.max(1, Math.min(12, parseInt(value, 10) || 1));
