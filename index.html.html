@@ -140,6 +140,31 @@ footer{background:#060408;border-top:1px solid rgba(212,175,55,.12);padding:2.5r
 .footer-copy{font-size:.65rem;color:rgba(255,255,255,.22);letter-spacing:.5px}
 html{scroll-behavior:smooth}
 @media(max-width:600px){.form-row{grid-template-columns:1fr}.nav-links{display:none}}
+  .cart-panel{
+  display:block!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+}
+
+.cart-items{
+  flex:none!important;
+  overflow:visible!important;
+  max-height:none!important;
+}
+
+.cart-footer{
+  flex:none!important;
+  overflow:visible!important;
+  max-height:none!important;
+}
+
+@media(max-height:820px),(max-width:760px){
+  .cart-footer,
+  .cart-items{
+    overflow:visible!important;
+    max-height:none!important;
+  }
+}
 
 /* ── ADMIN PANEL ── */
 .admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;display:none;align-items:center;justify-content:center;padding:1rem}
