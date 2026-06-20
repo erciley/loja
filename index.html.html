@@ -246,17 +246,21 @@ box-shadow:0 25px 60px rgba(0,0,0,.45);
 
 
 /* ===== AKARI REDESIGN V2 ===== */
-.hero::before{
-    content:"";
-    position:absolute;
-    inset:0;
+.hero{
+    min-height:100vh;
+    position:relative;
+    overflow:hidden;
 
     background:
-        radial-gradient(circle at center,
-        rgba(168,85,247,.18),
-        transparent 60%);
+        linear-gradient(
+            rgba(8,7,15,.72),
+            rgba(8,7,15,.85)
+        ),
+        url("images/hero-bg.webp");
 
-    pointer-events:none;
+    background-position:center;
+    background-size:cover;
+    background-repeat:no-repeat;
 }
 .hero::before{
 animation:pulse 10s infinite!important;
