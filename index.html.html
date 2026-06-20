@@ -896,20 +896,11 @@ Cada pedido é tratado como parte da nossa própria coleção.
         <button class="payment-option credit" id="payment-credit" type="button" onclick="setPaymentMethod('credit')">▣ Cartão</button>
       </div>
       <div class="installment-field" id="installment-field">
-        <select class="pf-input" id="credit-installments" onchange="setCreditInstallments(this.value)" aria-label="Número de parcelas">
-          <option value="1">1x sem juros</option>
-          <option value="2" selected>2x com juros</option>
-          <option value="3">3x com juros</option>
-          <option value="4">4x com juros</option>
-          <option value="5">5x com juros</option>
-          <option value="6">6x com juros</option>
-          <option value="7">7x com juros</option>
-          <option value="8">8x com juros</option>
-          <option value="9">9x com juros</option>
-          <option value="10">10x com juros</option>
-          <option value="11">11x com juros</option>
-          <option value="12">12x com juros</option>
-        </select>
+       <select class="pf-input" id="credit-installments" onchange="setCreditInstallments(this.value)" aria-label="Número de parcelas">
+    <option value="1">1x sem juros</option>
+    <option value="2">2x sem juros</option>
+    <option value="3" selected>3x sem juros</option>
+</select>
       </div>
       <div class="payment-condition" id="payment-condition">O preço promocional e o desconto abaixo são exclusivos para pagamento via Pix.</div>
     </div>
@@ -1087,7 +1078,7 @@ Cada pedido é tratado como parte da nossa própria coleção.
 const ADMIN_PASSWORD = 'akari2025'; // ← MUDE ESTA SENHA!
 const WA_NUMBER = '5592986471212';
 const STORAGE_KEY = 'akari_products_v1';
-const CREDIT_MONTHLY_RATE = 0.0299; // 2,99% ao mês nas parcelas acima de 1x
+const CREDIT_MONTHLY_RATE = 0;
 
 // ═══════════════════════════════════════════════
 // ESTADO
@@ -1444,9 +1435,7 @@ function setPaymentMethod(method){
   condition.classList.toggle('credit', method === 'credit');
   condition.textContent = method === 'pix'
     ? 'O preço promocional e o desconto abaixo são exclusivos para pagamento via Pix.'
-    : `No cartão é aplicado o preço normal. Parcelas acima de 1x incluem juros de ${(CREDIT_MONTHLY_RATE * 100).toFixed(2).replace('.', ',')}% ao mês.`;
-  updateCartUI();
-}
+    : 'No cartão aceitamos pagamento em até 3x sem juros.';
 
 function setCreditInstallments(value){
   creditInstallments = Math.max(1, Math.min(12, parseInt(value, 10) || 1));
